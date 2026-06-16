@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>✈️ AI Travel Planner — Azure AI Foundry</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────────────── -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-wrap">
+        <span class="logo-icon">✈️</span>
+      </div>
+      <div>
+        <h1 class="app-title">AI Travel Planner</h1>
+        <span class="app-sub">Powered by Azure AI Foundry</span>
+      </div>
+    </div>
+    <div class="header-right">
+      {% if not agent_ready %}
+      <span class="status-badge error">⚠️ Agent error</span>
+      {% endif %}
+      <button id="reset-btn" class="btn-reset" title="Start a new conversation">
+        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+        </svg>
+        New Chat
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Main layout ─────────────────────────────────────────── -->
+  <div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <p class="sidebar-heading">Try these queries</p>
+
+      <button class="prompt-chip" data-tool="file_search"
+        data-prompt="What is included in the Andaman Islands package? List the highlights, day-by-day itinerary, and important notes.">
+        <div class="chip-header">
+          <span class="chip-emoji">📄</span>
+          <span class="chip-tool" style="color:#10b981">FILE SEARCH</span>
+        </div>
+        <p class="chip-text">What's included in the Andaman package?</p>
+      </button>
+
+      <button class="prompt-chip" data-tool="code_interpreter"
+        data-prompt="Create a bar chart comparing the costs of all 4 travel packages in USD: Andaman ($385), Europe Grand Tour ($3500), Paris ($4000), Switzerland ($3100). Use different colors for each bar and add the price label on top.">
+        <div class="chip-header">
+          <span class="chip-emoji">🐍</span>
+          <span class="chip-tool" style="color:#8b5cf6">CODE INTERPRETER</span>
+        </div>
+        <p class="chip-text">Compare all 4 package costs in a chart</p>
+      </button>
+
+      <button class="prompt-chip" data-tool="bing_grounding"
+        data-prompt="What are the current travel advisories and visa requirements for Indian citizens visiting Switzerland in 2025?">
+        <div class="chip-header">
+          <span class="chip-emoji">🌐</span>
+          <span class="chip-tool" style="color:#3b82f6">BING SEARCH</span>
+        </div>
+        <p class="chip-text">Live travel advisories for Switzerland</p>
+      </button>
+
+      <button class="prompt-chip" data-tool="function"
+        data-prompt="What is the current weather in Port Blair, Andaman? Also what is today's USD to INR exchange rate?">
+        <div class="chip-header">
+          <span class="chip-emoji">⚙️</span>
+          <span class="chip-tool" style="color:#f59e0b">FUNCTION CALLING</span>
+        </div>
+        <p class="chip-text">Weather in Port Blair + USD→INR rate</p>
+      </button>
+
+      <button class="prompt-chip" data-tool="multi"
+        data-prompt="I am planning a Paris trip. From the destination guide, what is the total package cost and what is included? Convert the total to INR at today's exchange rate. Also are there any current travel alerts for France I should know about?">
+        <div class="chip-header">
+          <span class="chip-emoji">🔀</span>
+          <span class="chip-tool" style="color:#ec4899">MULTI-TOOL</span>
+        </div>
+        <p class="chip-text">Plan my Paris trip — cost, currency &amp; live alerts</p>
+      </button>
+
+      <div class="sidebar-divider"></div>
+      <p class="sidebar-note">
+        Each query demonstrates a different Azure AI Foundry tool capability.
+        The agent automatically selects the right tool(s).
+      </p>
+    </aside>
+
+    <!-- Chat area -->
+    <main class="chat-area" id="chat-area">
+
+      <!-- Welcome screen -->
+      <div class="welcome" id="welcome">
+        <div class="welcome-globe">✈️</div>
+        <h2 class="welcome-title">Your AI Travel Planner</h2>
+        <p class="welcome-sub">
+          Ask anything about destinations, budgets, or travel requirements.<br/>
+          This agent combines <strong>four AI tools</strong> to answer any travel question.
+        </p>
+        <div class="tool-pills">
+          <span class="tool-pill" style="border-color:#10b981;color:#10b981">📄 File Search</span>
+          <span class="tool-pill" style="border-color:#8b5cf6;color:#8b5cf6">🐍 Code Interpreter</span>
+          <span class="tool-pill" style="border-color:#3b82f6;color:#3b82f6">🌐 Bing Search</span>
+          <span class="tool-pill" style="border-color:#f59e0b;color:#f59e0b">⚙️ Functions</span>
+        </div>
+        {% if agent_error %}
+        <div class="error-banner">⚠️ {{ agent_error }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Messages -->
+      <div class="messages" id="messages"></div>
+    </main>
+  </div>
+
+  <!-- ── Input bar ───────────────────────────────────────────── -->
+  <div class="input-bar">
+    <div class="input-wrap">
+      <textarea id="chat-input" class="chat-input"
+        placeholder="Ask me anything about travel destinations, budgets, weather, or visa requirements…"
+        rows="1"></textarea>
+      <button id="send-btn" class="btn-send" title="Send">
+        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+      </button>
+    </div>
+    <p class="input-hint"><kbd>Enter</kbd> to send &nbsp;·&nbsp; <kbd>Shift+Enter</kbd> for new line</p>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

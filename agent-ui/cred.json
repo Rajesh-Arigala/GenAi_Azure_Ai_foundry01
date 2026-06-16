@@ -1,0 +1,44 @@
+{
+
+    "MODEL_DEPLOYMENT_NAME": "gpt-4o",
+
+    "EMBEDDING_MODEL_DEPLOYMENT_NAME": "text-embedding-3-small",
+
+    "TENANT_ID": "",
+
+    "GROUNDING_WITH_BING_CONNECTION_NAME": "",
+
+    "SERVERLESS_MODEL_NAME": "Phi-4",
+
+    "AZURE_OPENAI_API_KEY": "",
+
+    "AZURE_OPENAI_ENDPOINT": "",
+
+    "MODEL_NAME": "DeepSeek-R1",
+
+    "AZURE_INFERENCE_ENDPOINT":"",
+
+    "AZURE_INFERENCE_KEY":"",
+
+    "BING_CONNECTION_NAME":"aibinggrounding",
+
+    "STORAGE_SERVICE_ENDPONT":"",
+
+    "GITHUB_TOKEN":"",
+
+    "PROJECT_CONNECTION_STRING":"",
+
+    "PROJECT_ENDPOINT":"",
+    "INFERENCE_KEY":"",
+
+    "TEXT_EMBEDDING_MODEL":"",
+
+    "SERVERLESS_MODEL_NAME":"",
+
+    "SEARCH_ENDPOINT":"",
+    "SEARCH_API_KEY":"",
+    "SEARCH_INDEX_NAME":"",
+	"AGENT_ID":"",
+	"OPENWEATHER_API_KEY":""
+
+}
